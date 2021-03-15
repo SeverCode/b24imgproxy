@@ -1,0 +1,5 @@
+app:
+  listen:  ":8080"
+  local_uri: "/pub/mail/read.php"
+  remote_uri: "https://bitrix24.website/pub/mail/read.php?tag="
+  parameter_name: "tag"
