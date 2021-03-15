@@ -1,0 +1,36 @@
+name: build actions
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+  pull_request:
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.15.3'
+
+
+      - name: Install dependencies
+        run: |
+          go version
+          go get -d -v ./...
+          go install -v ./...
+
+      - name: Run build
+        run: go build .
