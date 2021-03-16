@@ -30,18 +30,20 @@ func getRequest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	sendRequest(key, w, r)
 
 }
+
 // send http request to other web server
 func sendRequest(key string, w http.ResponseWriter, r *http.Request) {
-	client := &http.Client{Timeout: 1 * time.Second,}
+	client := &http.Client{Timeout: 1 * time.Second}
 	res, err := client.Get(AppConfig.Get("remote_uri") + key)
 	if err != nil {
 		http.NotFound(w, r)
 		log.Error("Got error upon request: " + err.Error())
 		return
 	}
+	bytes, _ := ioutil.ReadAll(res.Body)
 	if res.StatusCode != 200 {
-		bytes, _ := ioutil.ReadAll(res.Body)
 		log.Error("Got error from gateway:" + string(bytes))
+		return
 	}
-	log.Println(res)
+	w.Write(bytes)
 }
