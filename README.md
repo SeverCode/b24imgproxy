@@ -38,6 +38,24 @@ mv config.yaml.example config.yaml && nano config.yaml
 go build
 ```
 
+## Как изменить URL картинки для работы через b24imgproxy
+Необходимо описать функцию custom_mail в bitrix/php_interface/init.php либо local/php_interface/init.php в зависимости от того где хранятся ваши обработчики.
+Код получится примерно следующий:
+```php
+function custom_mail($to, $subject, $message, $additional_headers = '', $additional_parameters = '')
+    {
+        $message = str_replace("https://bitrix24.website/pub/mail/read.php?tag=", "https://bitrix24imgproxy.website/pub/mail/read.php?tag=", $message);
+        if ($additional_parameters) {
+            return @mail($to, $subject, $message, $additional_headers, $additional_parameters);
+        } else {
+            return @mail($to, $subject, $message, $additional_headers);
+        }
+    }
+```
+* bitrix24.website - адрес вашего Битрикс24,
+* bitrix24imgproxy.website - адрес прокси. 
+
+
 ## Подмена адреса сервера в Bitrix24
 
 ## Зависимости / Dependecies
