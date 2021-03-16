@@ -50,5 +50,10 @@ func sendRequest(key string, w http.ResponseWriter, r *http.Request) {
 		log.Error("Got error from gateway:" + string(bytes))
 		return
 	}
-	w.Write(bytes)
+	_, err = w.Write(bytes)
+	if err != nil {
+		http.NotFound(w, r)
+		log.Error("Got error while send response: " + err.Error())
+		return
+	}
 }
