@@ -40,7 +40,12 @@ func sendRequest(key string, w http.ResponseWriter, r *http.Request) {
 		log.Error("Got error upon request: " + err.Error())
 		return
 	}
-	bytes, _ := ioutil.ReadAll(res.Body)
+	bytes, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		http.NotFound(w, r)
+		log.Error("Got error while streaming request: " + err.Error())
+		return
+	}
 	if res.StatusCode != 200 {
 		log.Error("Got error from gateway:" + string(bytes))
 		return
